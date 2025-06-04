@@ -5,6 +5,8 @@ import HeroBlock, { HeroBlockProps } from '@/Blocks/Hero'
 import FeaturesBlock, { FeaturesBlockProps } from '@/Blocks/Features'
 import { Page } from '@/payload-types'
 import HowItWorksBlock, { HowItWorksBlockProps } from '@/Blocks/HowItWorks'
+import CallToAction from '@/components/call-to-action'
+import Footer from '@/components/footer'
 
 export default async function HomeMain() {
   const payload = await getPayload({ config })
@@ -40,5 +42,9 @@ export default async function HomeMain() {
     }
   })
 
-  return <>{layouts}</>
+  return (
+    <>
+      {layouts} <CallToAction /> <Footer />
+    </>
+  )
 }

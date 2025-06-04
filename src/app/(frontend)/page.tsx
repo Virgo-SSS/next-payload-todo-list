@@ -1,59 +1,41 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
 import { getPayload } from 'payload'
+import config from '@payload-config'
 import React from 'react'
-import { fileURLToPath } from 'url'
+import HeroBlock, { HeroBlockProps } from '@/Blocks/Hero'
+import { Media } from '@/payload-types'
 
-import config from '@/payload.config'
-import './styles.css'
+export default async function HomeMain() {
+  const payload = await getPayload({ config })
+  const findResult = await payload.find({
+    collection: 'pages',
+    where: {
+      slug: {
+        equals: 'home-main',
+      },
+    },
+  })
 
-export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  if (findResult.totalDocs === 0) {
+    return <div>Page not found</div>
+  }
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  const page = findResult.docs[0]
+
+  if (!page) {
+    return <div>Page not found</div>
+  }
+
+  // You can use the page data to render dynamic content here
+  const heroBlock = page.layout.find((block) => block.blockType === 'hero')
+  console.log('heroBlock', heroBlock)
+
+  if (!heroBlock || !heroBlock.heading) {
+    return <div>Hero block not found or missing required heading</div>
+  }
 
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
-        </div>
-      </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
+    <>
+      <HeroBlock {...(heroBlock as HeroBlockProps)} />
+    </>
   )
 }

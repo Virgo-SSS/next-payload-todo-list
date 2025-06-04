@@ -4,6 +4,7 @@ import React, { ReactElement } from 'react'
 import HeroBlock, { HeroBlockProps } from '@/Blocks/Hero'
 import FeaturesBlock, { FeaturesBlockProps } from '@/Blocks/Features'
 import { Page } from '@/payload-types'
+import HowItWorksBlock from '@/Blocks/HowItWorks'
 
 export default async function HomeMain() {
   const payload = await getPayload({ config })
@@ -32,6 +33,8 @@ export default async function HomeMain() {
         return <HeroBlock key={block.id} {...(block as HeroBlockProps)} />
       case 'features':
         return <FeaturesBlock key={block.id} {...(block as FeaturesBlockProps)} />
+      case 'howItWorks':
+        return <HowItWorksBlock key={block.id} {...(block as any)} />
       default:
         return <div>Unknown block type:</div>
     }

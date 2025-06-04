@@ -159,18 +159,34 @@ export interface Page {
   id: string;
   title: string;
   slug: string;
-  layout: {
-    heading: string;
-    subheading: string;
-    image: string | Media;
-    ctaButton: {
-      text: string;
-      link: string;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'hero';
-  }[];
+  layout: (
+    | {
+        heading: string;
+        subheading: string;
+        image: string | Media;
+        ctaButton: {
+          text: string;
+          link: string;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'hero';
+      }
+    | {
+        sectionTitle: string;
+        features?:
+          | {
+              title: string;
+              description: string;
+              icon: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'features';
+      }
+  )[];
   updatedAt: string;
   createdAt: string;
 }
@@ -289,6 +305,21 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     text?: T;
                     link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        features?:
+          | T
+          | {
+              sectionTitle?: T;
+              features?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
                   };
               id?: T;
               blockName?: T;

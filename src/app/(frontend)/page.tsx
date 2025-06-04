@@ -1,8 +1,9 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import HeroBlock, { HeroBlockProps } from '@/Blocks/Hero'
-import { Media } from '@/payload-types'
+import FeaturesBlock, { FeaturesBlockProps } from '@/Blocks/Features'
+import { Page } from '@/payload-types'
 
 export default async function HomeMain() {
   const payload = await getPayload({ config })
@@ -19,23 +20,22 @@ export default async function HomeMain() {
     return <div>Page not found</div>
   }
 
-  const page = findResult.docs[0]
+  const page: Page = findResult.docs[0]
 
   if (!page) {
     return <div>Page not found</div>
   }
 
-  // You can use the page data to render dynamic content here
-  const heroBlock = page.layout.find((block) => block.blockType === 'hero')
-  console.log('heroBlock', heroBlock)
+  const layouts: ReactElement[] = page.layout.map((block) => {
+    switch (block.blockType) {
+      case 'hero':
+        return <HeroBlock key={block.id} {...(block as HeroBlockProps)} />
+      case 'features':
+        return <FeaturesBlock key={block.id} {...(block as FeaturesBlockProps)} />
+      default:
+        return <div>Unknown block type:</div>
+    }
+  })
 
-  if (!heroBlock || !heroBlock.heading) {
-    return <div>Hero block not found or missing required heading</div>
-  }
-
-  return (
-    <>
-      <HeroBlock {...(heroBlock as HeroBlockProps)} />
-    </>
-  )
+  return <>{layouts}</>
 }

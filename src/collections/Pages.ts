@@ -1,3 +1,4 @@
+import { FeaturesBlockConfig } from '@/Blocks/Features/config'
 import { HeroBlockConfig } from '@/Blocks/Hero/config'
 import { CollectionConfig } from 'payload'
 
@@ -19,7 +20,7 @@ export const Pages: CollectionConfig = {
       name: 'layout',
       type: 'blocks',
       required: true,
-      blocks: [HeroBlockConfig],
+      blocks: [HeroBlockConfig, FeaturesBlockConfig],
     },
   ],
 }
